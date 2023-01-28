@@ -115,7 +115,6 @@ xx.module("edu", function (apod) {
 
   function init() {
     return new Promise((resolve, reject) => {
-      // Promise.all([xx.myExpl.fetchTheFolders(), fixCompid()])
       Promise.all([myExpl.fetchTheFolders(), fixCompid()])
         .then((result) => {
           // console.log(result);
@@ -172,7 +171,9 @@ xx.module("edu", function (apod) {
           compid = common.random(68000000, 675999000);
           localStorage.setItem("compID", compid);
         }
+        alert(`compid = ${compid}`);
         xx.vars.compid = compid;
+        alert(`xx.vars.compid = ${xx.vars.compid}`);
         common.doFetch("ft_temp.php", "setSessionCompID", null, { "compID": xx.vars.compid })
           .then((json) => {
             if (json.value !== "success") {
@@ -2073,9 +2074,14 @@ xx.module("edu", function (apod) {
   let isActive = true; // if isActive is true then the page has focus
 
   let default_volumes = {
-    "r1": 1, // make starting volume for correct/wrong be 100%
-    "r2": 0.7, // make starting volume for background be 70%
-    "r3": 1, // make starting volume for q/options be 100%
+    r1: 1, // make starting volume for correct/wrong be 100%
+    r2: 0.7, // make starting volume for background be 70%
+    r3: 1, // make starting volume for q/options be 100%
+    // "r1": 1, // make starting volume for correct/wrong be 100%
+    // "r2": 0.7, // make starting volume for background be 70%
+    // "r3": 1, // make starting volume for q/options be 100%
+
+
   };
 
   function playCorrectOrWrong(corr) {

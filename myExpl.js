@@ -228,7 +228,7 @@ xx.module("myExpl", function (apod) {
           //turnOffSpinner(this,onFolder);
           // savethis.classList.remove("wait");
           if (json.value === "success") {
-            files_div.innerHTML = filesList(fp, json.files);
+            document.getElementById('files_div').innerHTML = filesList(fp, json.files);
           } else {
             if (json.errmsg != undefined) {
               alert(json.errmsg);
@@ -272,6 +272,7 @@ xx.module("myExpl", function (apod) {
       this.data = data;
       this.selected = -1;
       this.parr = [];
+      this.fob = '';
     }
 
     getFob() {

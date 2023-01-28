@@ -14,7 +14,6 @@ xx.module("common", function (apod) {
 
   apod.extend({
     addhcode: addhcode,
-    // public methods
     loadingOn: loadingOn,
     loadingOff: loadingOff,
     isLoadingOn: isLoadingOn,
@@ -300,9 +299,10 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   }
 
   function doFetch(url, todo, params, data, loadmsg = "Please wait...") {
+    url = "lib/php/" + url;
     let c = "?";
     if (todo) {
-      url = "lib/php/" + url + "?todo=" + todo;
+      url = url + "?todo=" + todo;
       c = "&";
     }
     if (params) url = url + c + q.param(params);
@@ -362,7 +362,8 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
       this.sl_ball.style.left = lf + "px";
       this.sl_r = lf / this.sl_maxRight;
     },
-    "initBall": function () {
+    // "initBall": function () {
+    initBall: function () {
       let lf = this.sl_r * this.sl_maxRight;
       this.sl_ball.style.left = lf + "px";
     },
@@ -751,38 +752,38 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     let n = 0;
     mob.tm = [];
     mob.sm = [];
-    for (let i = 0; i < meta["topmenu"].length; i++) {
-      if (meta["topmenu"][i].name) {
-        if (meta["topmenu"][i].func) {
-          mob.tm.push(meta["topmenu"][i].func);
+    for (let i = 0; i < meta.topmenu.length; i++) {
+      if (meta.topmenu[i].name) {
+        if (meta.topmenu[i].func) {
+          mob.tm.push(meta.topmenu[i].func);
         } else {
-          mob.tm.push(funcName(meta["topmenu"][i].name, i));
+          mob.tm.push(funcName(meta.topmenu[i].name, i));
         }
-        if (meta["topmenu"][i].hide) {
+        if (meta.topmenu[i].hide) {
           s += '<li class="menu nodisplay" data-v="' + i + '"';
         } else {
           s += '<li class="menu" data-v="' + i + '"';
         }
-        if (meta["topmenu"][i].id) {
-          s += ' id="' + meta["topmenu"][i].id + '"';
+        if (meta.topmenu[i].id) {
+          s += ' id="' + meta.topmenu[i].id + '"';
         }
-        s += ">" + meta["topmenu"][i].name;
-        if (meta["topmenu"][i]["submenu"]) {
+        s += ">" + meta.topmenu[i].name;
+        if (meta.topmenu[i].subpmenu) {
           // has dropdown submenus
           s += ' \u25bc<ul class="ul_' + i + ' nodisplay">';
-          for (let j = 0; j < meta["topmenu"][i]["submenu"].length; j++) {
-            if (meta["topmenu"][i]["submenu"][j].func) {
-              mob.sm.push(meta["topmenu"][i]["submenu"][j].func);
+          for (let j = 0; j < meta.topmenu[i].subpmenu.length; j++) {
+            if (meta.topmenu[i].subpmenu[j].func) {
+              mob.sm.push(meta.topmenu[i].subpmenu[j].func);
             } else {
               mob.sm.push(
-                funcName(meta["topmenu"][i]["submenu"][j].name, i, j)
+                funcName(meta.topmenu[i].subpmenu[j].name, i, j)
               );
             }
             s +=
               '<li class="submenu" data-v="' +
               n +
               '">' +
-              meta["topmenu"][i]["submenu"][j].name +
+              meta.topmenu[i].subpmenu[j].name +
               "</li>";
             n++;
           }
@@ -808,6 +809,75 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
       }
     }
   }
+
+
+
+  // function makemenu() {
+  //   // called from index.php; it inserts the top menu into the DOM
+  //   let s = '<ul id="theMenu" class="links">';
+  //   let n = 0;
+  //   mob.tm = [];
+  //   mob.sm = [];
+  //   for (let i = 0; i < meta["topmenu"].length; i++) {
+  //     if (meta["topmenu"][i].name) {
+  //       if (meta["topmenu"][i].func) {
+  //         mob.tm.push(meta["topmenu"][i].func);
+  //       } else {
+  //         mob.tm.push(funcName(meta["topmenu"][i].name, i));
+  //       }
+  //       if (meta["topmenu"][i].hide) {
+  //         s += '<li class="menu nodisplay" data-v="' + i + '"';
+  //       } else {
+  //         s += '<li class="menu" data-v="' + i + '"';
+  //       }
+  //       if (meta["topmenu"][i].id) {
+  //         s += ' id="' + meta["topmenu"][i].id + '"';
+  //       }
+  //       s += ">" + meta["topmenu"][i].name;
+  //       if (meta["topmenu"][i]["submenu"]) {
+  //         // has dropdown submenus
+  //         s += ' \u25bc<ul class="ul_' + i + ' nodisplay">';
+  //         for (let j = 0; j < meta["topmenu"][i]["submenu"].length; j++) {
+  //           if (meta["topmenu"][i]["submenu"][j].func) {
+  //             mob.sm.push(meta["topmenu"][i]["submenu"][j].func);
+  //           } else {
+  //             mob.sm.push(
+  //               funcName(meta["topmenu"][i]["submenu"][j].name, i, j)
+  //             );
+  //           }
+  //           s +=
+  //             '<li class="submenu" data-v="' +
+  //             n +
+  //             '">' +
+  //             meta["topmenu"][i]["submenu"][j].name +
+  //             "</li>";
+  //           n++;
+  //         }
+  //         s += "</ul>";
+  //         s += "</li>";
+  //       } else {
+  //         // top menu which has no dropdown submenus
+  //         s += "</li>";
+  //       }
+  //     }
+  //   }
+  //   s += "</ul>";
+  //   q._("mainmenu_placeholder").outerHTML = s;
+
+  //   function funcName(s, i, j = undefined) {
+  //     s = s.replace(/[ -\/_!@#$%^&*()=+\\]/g, "");
+  //     if (j === undefined) {
+  //       // topmenu name
+  //       return "mnu" + i + "_" + s;
+  //     } else {
+  //       // submenu name
+  //       return "mnu" + i + "_" + j + s;
+  //     }
+  //   }
+  // }
+
+
+
 
   function extractBetween(s, s1 = null, s2 = null) {
     if (s2 === null) {

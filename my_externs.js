@@ -17,7 +17,7 @@ vars.hcode;
 // vars.msgArr;
 
 var q;
-q._.qs.qa.trigger.delegate.extend.getWidth.getHeight.setWidth.setHeight. moveElement.isChildOf.param.getTop.getMarginLeft.getMarginTop.getMargin. myOffset.removeAllClasses.getOuterWidth.getOuterWidth.getOffsetWidth.getOffsetHeight;
+// q._.qs.qa.trigger.delegate.extend.getWidth.getHeight.setWidth.setHeight. moveElement.isChildOf.param.getTop.getMarginLeft.getMarginTop.getMargin. myOffset.removeAllClasses.getOuterWidth.getOuterWidth.getOffsetWidth.getOffsetHeight;
 
 
  
@@ -26,7 +26,7 @@ q._.qs.qa.trigger.delegate.extend.getWidth.getHeight.setWidth.setHeight. moveEle
  
 var common;
 // common.q;
-common.addhcode.loadingOn.loadingOff.isLoadingOn.getHtmlCode.getHtml.replacer.getImageSize.showMessage.htmlspecialchars.htmlspecialchars_decode.fixElementAndMask.validateEmail.isEmail.isValidURL.widen.enterKeyOnInput.get_ext.doFetch.Slider1.rgbaColor.random.trim.callMenuFunc.getMob.setMob.makemenu.myStop.centreBoxAndShow.showDialog.hideDialog.checkHeight.checkWidth.transfer_needed_variables;
+// common.addhcode.loadingOn.loadingOff.isLoadingOn.getHtmlCode.getHtml.replacer.getImageSize.showMessage.htmlspecialchars.htmlspecialchars_decode.fixElementAndMask.validateEmail.isEmail.isValidURL.widen.enterKeyOnInput.get_ext.doFetch.Slider1.rgbaColor.random.trim.callMenuFunc.getMob.setMob.makemenu.myStop.centreBoxAndShow.showDialog.hideDialog.checkHeight.checkWidth.transfer_needed_variables;
 common.hcode;
 
 // inside Slider1 class
@@ -95,9 +95,9 @@ xx.bcname.bcemail.bctel.bname.bdes.bcontact.blogo;
 
 //************** for edu
 var edu;
-edu.checkopenfile.OpenFile.Categories.Numberofquestions.Timeallowed.Audiovolume;
-edu.getandopenfile;
-edu.fname1;
+// edu.checkopenfile.OpenFile.Categories.Numberofquestions.Timeallowed.Audiovolume;
+// edu.getandopenfile.fname1;
+edu.r3;
 
 //edu.cid.key;     // I am not sure if these are needed
 menuFunctions.callMenuFunc.__openFile.__categories.__numberOfQuestions.__timeAllowed.__audioVolume;
@@ -118,4 +118,8 @@ loc;
  */
 
 var myExpl;
-myExpl.init.fetchTheFolders;
+// myExpl.init.fetchTheFolders;
+// needed
+myExpl.f.ps.pn.fp;
+
+

@@ -3,23 +3,44 @@
 xx.module('meta', function (apod) {
 
   apod.extend({
-    "siteVars": {
-      "siteName": 'TestU',
-      "pageName": 'Home page'
+    // "siteVars": {
+    siteVars: {
+      siteName: 'TestU',
+      pageName: 'Home page'
     },
-    "topmenu": [
-      { "name": 'Open File', "func": '__openFile' },          // 0
-      { "name": 'Categories', "func": '__categories' },            // 1
+    topmenu: [
+      { name: 'Open File', func: '__openFile' },          // 0
+      { name: 'Categories', func: '__categories' },            // 1
       {
-        "name": 'Settings',   // 2
-        "submenu": [
-          { "name": 'Number of questions', "func": '__numberOfQuestions' },
-          { "name": 'Time allowed', "func": '__timeAllowed' },
-          { "name": 'Audio volume', "func": '__audioVolume' }
+        name: 'Settings',   // 2
+        submenu: [
+          { name: 'Number of questions', func: '__numberOfQuestions' },
+          { name: 'Time allowed', func: '__timeAllowed' },
+          { name: 'Audio volume', func: '__audioVolume' }
         ]
       }
     ]
   });
+
+  // apod.extend({
+  //   // "siteVars": {
+  //   siteVars: {
+  //     "siteName": 'TestU',
+  //     "pageName": 'Home page'
+  //   },
+  //   "topmenu": [
+  //     { "name": 'Open File', "func": '__openFile' },          // 0
+  //     { "name": 'Categories', "func": '__categories' },            // 1
+  //     {
+  //       "name": 'Settings',   // 2
+  //       "submenu": [
+  //         { "name": 'Number of questions', "func": '__numberOfQuestions' },
+  //         { "name": 'Time allowed', "func": '__timeAllowed' },
+  //         { "name": 'Audio volume', "func": '__audioVolume' }
+  //       ]
+  //     }
+  //   ]
+  // });
 
 });
 

@@ -25,7 +25,7 @@ xx.module('q', function (apod) {
     myOffset: myOffset,
     removeAllClasses: removeAllClasses,
     getOuterWidth: getOuterWidth,
-    getOuterWidth: getOuterWidth,
+    getOuterHeight: getOuterHeight,
     getOffsetWidth: getOffsetWidth,
     getOffsetHeight: getOffsetHeight
   }
@@ -254,7 +254,7 @@ function getOuterWidth(el) {
   return width;
 }
 
-function getOuterWidth(el) {
+function getOuterHeight(el) {
   // this is the outer height with margin
   var height = el.offsetHeight;
   var style = getComputedStyle(el);

@@ -3,6 +3,9 @@
 copy /b common.min.js + menu.min.js + menumeta.min.js ezf.min.all.js
 copy /b common.js + menu.js + menumeta.js ezf.all.js
 copy /b jquery-1.10.2.min.js + myNamespace2.PP.adv.min.js + common.PP.adv.min.js + edumeta.PP.adv.min.js + edu.adv.min.js edu.all.js
+
+copy /b myNamespace2.PP.adv.min.js + myJsLib1.PP.adv.min.js + common.jQfree.PP.adv.min.js + edu.PP.adv.min.js + edumeta.PP.adv.min.js + myExpl.PP.adv.min.js     eduall.PP.adv.min.js
+
 copy /b jquery-1.10.2.min.js + eduall.adv.min.js edu.all.js
 
 copy /b common.css + edu.css   edu.all.css
@@ -19,8 +22,11 @@ cd c:/xampp/htdocs/lib/css
 
 //************************ myNamespace2
 java -jar gcc2.jar --js myNamespace2.js try1.js --compilation_level ADVANCED --language_out ECMASCRIPT3 --js_output_file try1.min.js
+
 java -jar gcc2.jar --js myNamespace2.js --js ezfhcode.js --js_output_file ezfhcode.min.js --compilation_level ADVANCED
+
 java -jar gcc2.jar --js myNamespace2.js --language_out ECMASCRIPT3 --js_output_file myNamespace2.simple.min.js
+
 java -jar gcc2.jar --js myNamespace2.js -O ADVANCED --language_out ECMASCRIPT3 --js_output_file myNamespace2.adv.min.js
 
 java -jar gcc2.jar --js myNamespace2.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --formatting PRETTY_PRINT --js_output_file myNamespace2.PP.adv.min.js
@@ -46,7 +52,7 @@ java -client -jar gcc2.jar --js common.js -O ADVANCED --language_out ECMASCRIPT3
 //************************ commonjQfree.js
 
 
-java -client -jar gcc2.jar --js common.jQfree.js -O ADVANCED --language_out ECMASCRIPT3 --formatting PRETTY_PRINT --isolation_mode IIFE --externs my_externs.js --js_output_file common.PP.jQfree.adv.min.js
+java -client -jar gcc2.jar --js common.jQfree.js -O ADVANCED --language_out ECMASCRIPT3 --formatting PRETTY_PRINT --isolation_mode IIFE --externs my_externs.js --js_output_file common.jQfree.PP.adv.min.js
 
 java -client -jar gcc2.jar --js common.jQfree.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file common.jQfree.adv.min.js
 
@@ -111,10 +117,42 @@ java -client -jar gcc2.jar --js edumeta.js -O ADVANCED --language_out ECMASCRIPT
 java -client -jar gcc2.jar --js edumeta.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file edumeta.adv.min.js
 
 
+//************************ myJsLib1.js
+
+java -client -jar gcc2.jar --js myJsLib1.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --formatting PRETTY_PRINT --externs my_externs.js --js_output_file myJsLib1.PP.adv.min.js
+
+java -client -jar gcc2.jar --js myJsLib1.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file myJsLib1.adv.min.js
+
+
+//************************ myExpl.js
+
+java -client -jar gcc2.jar --js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --formatting PRETTY_PRINT --externs my_externs.js --js_output_file myExpl.PP.adv.min.js
+
+java -client -jar gcc2.jar --js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file myExpl.adv.min.js
+
+
+
+
+
 //************************ eduall.js
 java -client -jar gcc2.jar --js myNamespace3.js common.js edumeta.js edu.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --formatting PRETTY_PRINT --externs my_externs.js --js_output_file eduall.PP.adv.min.js
 
-java -client -jar gcc2.jar --js myNamespace3.js common.js edumeta.js edu.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file eduall.adv.min.js
+java -client -jar gcc2.jar --js myNamespace2.js myJsLib1.js common.jQfree.js edu.js edumeta.js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --formatting PRETTY_PRINT --externs my_externs.js --js_output_file eduall.combined.PP.adv.min.js
+
+// no longer using my_externs.js
+java -client -jar gcc2.jar --js myNamespace2.js myJsLib1.js common.jQfree.js edu.js edumeta.js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs my_externs.js --js_output_file eduall.combined.adv.min.js
+
+// combined, PP, edu_externs.js
+java -client -jar gcc2.jar --js myNamespace2.js myJsLib1.js common.jQfree.js edu.js edumeta.js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --formatting PRETTY_PRINT --externs edu_externs.js --js_output_file eduall.combined.PP.adv.min.js
+
+// combined, edu_externs.js
+java -client -jar gcc2.jar --js myNamespace2.js myJsLib1.js common.jQfree.js edu.js edumeta.js myExpl.js -O ADVANCED --language_out ECMASCRIPT3 --isolation_mode IIFE --externs edu_externs.js --js_output_file eduall.combined.adv.min.js
+
+
+
+
+
+
 
 --compilation_level (-O) VAL
 --debug
