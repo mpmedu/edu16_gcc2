@@ -2,8 +2,8 @@
 
 xx.module("myExpl", function (apod) {
 
-  let vars = xx.vars;
-  let q = xx.q;
+  const vars = xx.vars;
+  const q = xx.q;
   let common;
   xx.imports.push(function () {
     common = xx.common;
@@ -81,48 +81,6 @@ xx.module("myExpl", function (apod) {
         resolve('is done after getFob()');
       });
     });
-  }
-
-
-  function theFolders(json) {
-    // turn itemPopup off just in case it is still showing
-    let ele = q._("itemPopup");
-    ele.classList.remove("chosen");
-    ele.classList.add("nodisplay");
-    try {
-      let s;
-      s = jsFolders(json, show_dir_from, 0);
-      return s;
-    } catch (e) {
-      alert(`error : ${e}`);
-    }
-  }
-
-  // Note that the spans are put together to prevent space gaps between the elements
-  function jsFolders(json, p, level) {
-    let s = '<div class="items level' + level + '">';
-    while (true) {
-      if (json.ps[p] > 0) {
-        // there are subfolders
-        s += `<div id="ai_${p}">
-          <span class="indx">${common.getHtml("tem_plusMinus")}</span><span 
-          class="holder"><span class="directory"></span><span 
-          class="itemName">${json.f[p]}</span></span>
-          </div>
-          <div class="subcatlistdiv nodisplay">${jsFolders(json, json.ps[p], level + 1)}
-          </div>`;
-        if (level === 0) displaceLeft = false;
-      } else {
-        // no subfolders
-        s += `<div id="ai_${p}">
-            <span class="indx"></span><span class="holder"><span 
-            class="directory"></span><span class="itemName">${json.f[p]}</span>
-            </span>
-            </div>`;
-      }
-      p = json.pn[p];
-      if (p === 0) return s + "</div>";
-    }
   }
 
   // .inbox is the plus or minus icon to open or close a folder
@@ -258,7 +216,6 @@ xx.module("myExpl", function (apod) {
     return ss + "</ul>";
   }
 
-
   function set_selected_off() {
     // clears all values in myExplorer
     q._("fn_input").value = "";
@@ -267,6 +224,7 @@ xx.module("myExpl", function (apod) {
     save_selected_file = '';
   }
 
+  // start of foldersClass which has methods to get the folders and put them
   class foldersClass {
     constructor(data) {
       this.data = data;
@@ -290,10 +248,51 @@ xx.module("myExpl", function (apod) {
     }
 
     putFob() {
-      q._("folders_div").innerHTML = theFolders(this.fob);
+      q._("folders_div").innerHTML = this.theFolders(this.fob);
       // if no subfolders then move items left because there is no + for subfolders
       if (displaceLeft) {
         q._("folders_div").querySelector(".items").style.marginLeft = -14 + "px";
+      }
+    }
+
+    theFolders(json) {
+      // turn itemPopup off just in case it is still showing
+      let ele = q._("itemPopup");
+      ele.classList.remove("chosen");
+      ele.classList.add("nodisplay");
+      try {
+        let s;
+        s = this.jsFolders(json, show_dir_from, 0);
+        return s;
+      } catch (e) {
+        alert(`error : ${e}`);
+      }
+    }
+  
+    // Note that the spans are put together to prevent space gaps between the elements
+    jsFolders(json, p, level) {
+      let s = '<div class="items level' + level + '">';
+      while (true) {
+        if (json.ps[p] > 0) {
+          // there are subfolders
+          s += `<div id="ai_${p}">
+            <span class="indx">${common.getHtml("tem_plusMinus")}</span><span 
+            class="holder"><span class="directory"></span><span 
+            class="itemName">${json.f[p]}</span></span>
+            </div>
+            <div class="subcatlistdiv nodisplay">${this.jsFolders(json, json.ps[p], level + 1)}
+            </div>`;
+          if (level === 0) displaceLeft = false;
+        } else {
+          // no subfolders
+          s += `<div id="ai_${p}">
+              <span class="indx"></span><span class="holder"><span 
+              class="directory"></span><span class="itemName">${json.f[p]}</span>
+              </span>
+              </div>`;
+        }
+        p = json.pn[p];
+        if (p === 0) return s + "</div>";
       }
     }
 
@@ -347,4 +346,5 @@ xx.module("myExpl", function (apod) {
       return xx.vars.docPath + s;
     }
   } // end of folderClass
+
 });

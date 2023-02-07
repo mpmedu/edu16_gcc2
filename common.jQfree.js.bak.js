@@ -33,7 +33,7 @@ xx.module("common", function (apod) {
     get_ext: get_ext,
     doFetch: doFetch,
     //wait2:wait2,
-    // Slider1: Slider1,
+    Slider1: Slider1,
     rgbaColor: rgbaColor,
     random: random,
     trim: trim,
@@ -48,7 +48,6 @@ xx.module("common", function (apod) {
     checkHeight: checkHeight,
     checkWidth: checkWidth,
     transfer_needed_variables: transfer_needed_variables,
-    maskscreen:maskscreen,
   });
 
   xx.constants = {
@@ -300,7 +299,9 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   }
 
   function doFetch(url, todo, params, data, loadmsg = "Please wait...") {
-    url = "./lib/php/" + url;
+    // url = "lib/php/" + url;
+    // url = "./lib/php/" + url;
+    url = vars.URL_lib + 'php/' + url;
     let c = "?";
     if (todo) {
       url = url + "?todo=" + todo;
@@ -309,57 +310,117 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     if (params) url = url + c + q.param(params);
     let ob = { "url": url, "loadmsg": loadmsg };
     loadingOn(ob);
-    // the fetch() call enclosed in a promise
+
     return new Promise((resolve, reject) => {
-      let isJson = false;
       fetch(url, {
         "method": "POST",
         "headers": {
-          "Accept": "*/*",
+          "Accept": "application/json, text/plain, */*",
+          //"Content-Type": "application/json; charset=UTF-8"
           "Content-Type": "application/json",
           // "Content-Type": "application/x-www-form-urlencoded"
         },
         "body": JSON.stringify(data),
       })
-        .then(res => {
-          //   for (const pair of res.headers.entries()) {
-          //     console.log(`${pair[0]}: ${pair[1]}`);
-          //  }
-          if (res.headers.get('content-type').includes('application/json')) {
-            isJson = true;
-            return res.json();
-          } else {
-            return res.text();
-          }
+        // .then((res) => res.json())
+        .then(async(res)=> {
+          const isJson = res.headers.get('content-type')?.includes('application/json');
+          const json = isJson ? await res.json() : null;
+
+
+
+          // let txt = await res.text();
+          if(!res.ok)
+            throw await res.json();
+          // return res.json();
+          alert('here');
+
+         return res.text();
+        //  return res.json();
         })
-        .then(jsonOrtxt => {
-          if (isJson) {
-            // console.log(jsonOrtxt);
-            if (jsonOrtxt.value === 'fail') {
-              // something went wrong
-              if (jsonOrtxt.errmsg) {
-                reject(jsonOrtxt.errmsg);
-              } else {
-                reject(jsonOrtxt.value);
-              }
-            } else {
-              resolve(jsonOrtxt);
-            }
-          } else {
-            // there was an error returned
-            jsonOrtxt = jsonOrtxt.replace(/&quot;/g, '"');
-            alert(jsonOrtxt);
-            reject(jsonOrtxt);
+        .then((json) => {
+          if (json.substring(0, 1) === '{'){
+// json = parse
           }
+
+          console.log(json);
+          // loadingOff(ob);
+          resolve(json);
         })
+        // .then(async response => {
+        //   const isJson = response.headers.get('content-type')?.includes('application/json');
+        //   const data = isJson ? await response.json() : null;
+
+        //   if (!response.ok) {
+        //     // get error message from body or default to response status
+        //     const error = (data && data.message) || response.status;
+        //     return Promise.reject(error);
+        //   }
+        //   alert(JSON.stringify(data, null, 4));
+        //   // element.innerHTML = JSON.stringify(data, null, 4);
+        // })
+
         .catch((err) => {
           console.log(err);
+          console.log(err.message);
+          // loadingOff(ob);
           reject(err);
         })
         .finally(() => {
           loadingOff(ob);
         });
     });
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  function AUDIO_AND_VOLUME_CONTROL() { }
+  ////////////////////////////////////////////////////////////////////
+
+  /** * @constructor */
+  function Slider1(contId, ballId, r) {
+    this.sl_cont = q._(contId);
+    this.sl_ball = q._(ballId);
+    this.sl_r = r;
+    this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
+  }
+
+  Slider1.prototype = {
+    "moveBall": function (e) {
+      let lf = e.offsetX - 7;
+      if (e.target === this.sl_ball) {
+        lf = lf + e.target.offsetLeft;
+      }
+      if (lf < 0) {
+        lf = 0;
+      } else if (lf > this.sl_maxRight) {
+        lf = this.sl_maxRight;
+      }
+      this.sl_ball.style.left = lf + "px";
+      this.sl_r = lf / this.sl_maxRight;
+    },
+    // "initBall": function () {
+    initBall: function () {
+      let lf = this.sl_r * this.sl_maxRight;
+      this.sl_ball.style.left = lf + "px";
+    },
+  };
+
+  initAud("cont", "ball", 0.2);
+
+  function initAud(c, b, r) {
+    let slider = new Slider1(c, b, r);
+    slider.initBall();
+    if (c === "cont") {
+      q._("cont").addEventListener("click", (e) => {
+        slider.moveBall(e);
+        //setVolume();
+      });
+    } else {
+      q._(c).addEventListener("click", (e) => {
+        slider.moveBall(e);
+      });
+    }
+    return slider;
   }
 
   // ////////////////////////////////////////////////////////////////
@@ -691,6 +752,31 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     mob.submenuActive = y;
   }
 
+  // ******************************************
+  // this event handler is for clicks on the top menu and sub menu items
+  // it calls the function attached to the menu item
+  // ******************************************
+
+  // this should really be in edu.js and not common.js
+  q.delegate("topmenucontainer", "click", "#theMenu li", function __clickOnAMenuItem(e) {
+    e.stopPropagation(); // Stop stuff happening
+    //e.preventDefault(); // Totally stop stuff happening
+    // light up the menu item and submenu item that was clicked
+    maskscreen();
+    if (this.classList.contains("menu")) {
+      mob.menuActive = Number(this.getAttribute("data-v"));
+      mob.submenuActive = -1;
+    } else {
+      // it is a submenu item
+      let pa = this.parentNode.parentNode;
+      mob.menuActive = Number(pa.getAttribute("data-v"));
+      mob.submenuActive = Number(this.getAttribute("data-v"));
+    }
+    // call the function associated with the menu item that was clicked
+    // q._("tdhead").classList.add("nodisplay");  // I don't know what tdhead is
+    callMenuFunc();
+  }
+  );
 
   function callMenuFunc() {
     menuFunctions.callMenuFunc(mob);

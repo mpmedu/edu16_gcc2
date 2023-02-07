@@ -17,6 +17,8 @@ xx.module("edu", function (apod) {
     Numberofquestions: Numberofquestions,
     Timeallowed: Timeallowed,
     Audiovolume: Audiovolume,
+    // Slider1: Slider1,
+
   };
 
   apod.extend(exports);
@@ -171,9 +173,9 @@ xx.module("edu", function (apod) {
           compid = common.random(68000000, 675999000);
           localStorage.setItem("compID", compid);
         }
-        alert(`compid = ${compid}`);
+        // alert(`compid = ${compid}`);
         xx.vars.compid = compid;
-        alert(`xx.vars.compid = ${xx.vars.compid}`);
+        // alert(`xx.vars.compid = ${xx.vars.compid}`);
         common.doFetch("ft_temp.php", "setSessionCompID", null, { "compID": xx.vars.compid })
           .then((json) => {
             if (json.value !== "success") {
@@ -238,7 +240,8 @@ xx.module("edu", function (apod) {
     sd3 = initAud("cont_v3", "ball_v3", default_volumes.r3);
 
     function initAud(c, b, r) {
-      var slider = new common.Slider1(c, b, r);
+      // var slider = new common.Slider1(c, b, r);
+      var slider = new Slider1(c, b, r);
       slider.initBall();
       if (c === "cont") {
         q._("cont").addEventListener("click", (e) => {
@@ -837,7 +840,7 @@ xx.module("edu", function (apod) {
             codeBytes = json.codeBytes;
             nFreeAccessQs = json.nFreeAccessQs;
             base = json.base;
-            fdata = json.data;
+            fdata = json.fdata;
             ptrArr = json.ptrArr;
             cdArr = json.cdArr;
             ansCoder = json.ansCoder;
@@ -2249,5 +2252,87 @@ xx.module("edu", function (apod) {
     if (mostate === -2) return; // no sounds should be playing
     checkBackgroundSound();
   });
+
+
+  ////////////////////////////////////////////////////////////////////
+  function AUDIO_AND_VOLUME_CONTROL() { }
+  ////////////////////////////////////////////////////////////////////
+
+  /** * @constructor */
+  function Slider1(contId, ballId, r) {
+    this.sl_cont = q._(contId);
+    this.sl_ball = q._(ballId);
+    this.sl_r = r;
+    this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
+  }
+
+  Slider1.prototype = {
+    "moveBall": function (e) {
+      let lf = e.offsetX - 7;
+      if (e.target === this.sl_ball) {
+        lf = lf + e.target.offsetLeft;
+      }
+      if (lf < 0) {
+        lf = 0;
+      } else if (lf > this.sl_maxRight) {
+        lf = this.sl_maxRight;
+      }
+      this.sl_ball.style.left = lf + "px";
+      this.sl_r = lf / this.sl_maxRight;
+    },
+    // "initBall": function () {
+    initBall: function () {
+      let lf = this.sl_r * this.sl_maxRight;
+      this.sl_ball.style.left = lf + "px";
+    },
+  };
+
+  initAud("cont", "ball", 0.2);
+
+  function initAud(c, b, r) {
+    let slider = new Slider1(c, b, r);
+    slider.initBall();
+    if (c === "cont") {
+      q._("cont").addEventListener("click", (e) => {
+        slider.moveBall(e);
+        //setVolume();
+      });
+    } else {
+      q._(c).addEventListener("click", (e) => {
+        slider.moveBall(e);
+      });
+    }
+    return slider;
+  }
+
+
+    // ******************************************
+  // this event handler is for clicks on the top menu and sub menu items
+  // it calls the function attached to the menu item
+  // ******************************************
+
+  // this should really be in edu.js and not common.js
+  q.delegate("topmenucontainer", "click", "#theMenu li", function __clickOnAMenuItem(e) {
+    e.stopPropagation(); // Stop stuff happening
+    //e.preventDefault(); // Totally stop stuff happening
+    // light up the menu item and submenu item that was clicked
+    common.maskscreen();
+    const mob = common.getMob();
+    if (this.classList.contains("menu")) {
+      mob.menuActive = Number(this.getAttribute("data-v"));
+      mob.submenuActive = -1;
+    } else {
+      // it is a submenu item
+      let pa = this.parentNode.parentNode;
+      mob.menuActive = Number(pa.getAttribute("data-v"));
+      mob.submenuActive = Number(this.getAttribute("data-v"));
+    }
+    // call the function associated with the menu item that was clicked
+    // q._("tdhead").classList.add("nodisplay");  // I don't know what tdhead is
+    common.callMenuFunc();
+  });
+
+
+
 
 });
