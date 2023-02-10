@@ -33,7 +33,6 @@ xx.module("common", function (apod) {
     get_ext: get_ext,
     doFetch: doFetch,
     //wait2:wait2,
-    // Slider1: Slider1,
     rgbaColor: rgbaColor,
     random: random,
     trim: trim,
@@ -47,8 +46,11 @@ xx.module("common", function (apod) {
     hideDialog: hideDialog,
     checkHeight: checkHeight,
     checkWidth: checkWidth,
-    transfer_needed_variables: transfer_needed_variables,
+    // transfer_needed_variables: transfer_needed_variables,
+    transfer_ob:transfer_ob,
     maskscreen:maskscreen,
+    Slider1: Slider1,
+    // initAud:initAud,
   });
 
   xx.constants = {
@@ -299,6 +301,7 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     }
   }
 
+  // this function fetches stuff from a url
   function doFetch(url, todo, params, data, loadmsg = "Please wait...") {
     url = "./lib/php/" + url;
     let c = "?";
@@ -342,19 +345,22 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
               } else {
                 reject(jsonOrtxt.value);
               }
+              myStop('An error occurred while fetching from the server')
             } else {
               resolve(jsonOrtxt);
             }
           } else {
             // there was an error returned
             jsonOrtxt = jsonOrtxt.replace(/&quot;/g, '"');
-            alert(jsonOrtxt);
-            reject(jsonOrtxt);
+            // alert(jsonOrtxt);
+            // reject(jsonOrtxt);
+            myStop('An error occurred with connection')
           }
         })
         .catch((err) => {
           console.log(err);
           reject(err);
+          myStop('An unknown error occurred')
         })
         .finally(() => {
           loadingOff(ob);
@@ -674,7 +680,6 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   };
 
   function maskscreen() {
-    //console.log('in maskscreen');
     // this is only needed to turn a submenu off
     q._("bodymask").classList.remove("nodisplay");
     setTimeout(() => {
@@ -690,7 +695,6 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     mob.menuActive = x;
     mob.submenuActive = y;
   }
-
 
   function callMenuFunc() {
     menuFunctions.callMenuFunc(mob);
@@ -718,22 +722,22 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
           s += ' id="' + meta.topmenu[i].id + '"';
         }
         s += ">" + meta.topmenu[i].name;
-        if (meta.topmenu[i].subpmenu) {
+        if (meta.topmenu[i].submenu) {
           // has dropdown submenus
           s += ' \u25bc<ul class="ul_' + i + ' nodisplay">';
-          for (let j = 0; j < meta.topmenu[i].subpmenu.length; j++) {
-            if (meta.topmenu[i].subpmenu[j].func) {
-              mob.sm.push(meta.topmenu[i].subpmenu[j].func);
+          for (let j = 0; j < meta.topmenu[i].submenu.length; j++) {
+            if (meta.topmenu[i].submenu[j].func) {
+              mob.sm.push(meta.topmenu[i].submenu[j].func);
             } else {
               mob.sm.push(
-                funcName(meta.topmenu[i].subpmenu[j].name, i, j)
+                funcName(meta.topmenu[i].submenu[j].name, i, j)
               );
             }
             s +=
               '<li class="submenu" data-v="' +
               n +
               '">' +
-              meta.topmenu[i].subpmenu[j].name +
+              meta.topmenu[i].submenu[j].name +
               "</li>";
             n++;
           }
@@ -760,75 +764,6 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     }
   }
 
-
-
-  // function makemenu() {
-  //   // called from index.php; it inserts the top menu into the DOM
-  //   let s = '<ul id="theMenu" class="links">';
-  //   let n = 0;
-  //   mob.tm = [];
-  //   mob.sm = [];
-  //   for (let i = 0; i < meta["topmenu"].length; i++) {
-  //     if (meta["topmenu"][i].name) {
-  //       if (meta["topmenu"][i].func) {
-  //         mob.tm.push(meta["topmenu"][i].func);
-  //       } else {
-  //         mob.tm.push(funcName(meta["topmenu"][i].name, i));
-  //       }
-  //       if (meta["topmenu"][i].hide) {
-  //         s += '<li class="menu nodisplay" data-v="' + i + '"';
-  //       } else {
-  //         s += '<li class="menu" data-v="' + i + '"';
-  //       }
-  //       if (meta["topmenu"][i].id) {
-  //         s += ' id="' + meta["topmenu"][i].id + '"';
-  //       }
-  //       s += ">" + meta["topmenu"][i].name;
-  //       if (meta["topmenu"][i]["submenu"]) {
-  //         // has dropdown submenus
-  //         s += ' \u25bc<ul class="ul_' + i + ' nodisplay">';
-  //         for (let j = 0; j < meta["topmenu"][i]["submenu"].length; j++) {
-  //           if (meta["topmenu"][i]["submenu"][j].func) {
-  //             mob.sm.push(meta["topmenu"][i]["submenu"][j].func);
-  //           } else {
-  //             mob.sm.push(
-  //               funcName(meta["topmenu"][i]["submenu"][j].name, i, j)
-  //             );
-  //           }
-  //           s +=
-  //             '<li class="submenu" data-v="' +
-  //             n +
-  //             '">' +
-  //             meta["topmenu"][i]["submenu"][j].name +
-  //             "</li>";
-  //           n++;
-  //         }
-  //         s += "</ul>";
-  //         s += "</li>";
-  //       } else {
-  //         // top menu which has no dropdown submenus
-  //         s += "</li>";
-  //       }
-  //     }
-  //   }
-  //   s += "</ul>";
-  //   q._("mainmenu_placeholder").outerHTML = s;
-
-  //   function funcName(s, i, j = undefined) {
-  //     s = s.replace(/[ -\/_!@#$%^&*()=+\\]/g, "");
-  //     if (j === undefined) {
-  //       // topmenu name
-  //       return "mnu" + i + "_" + s;
-  //     } else {
-  //       // submenu name
-  //       return "mnu" + i + "_" + j + s;
-  //     }
-  //   }
-  // }
-
-
-
-
   function extractBetween(s, s1 = null, s2 = null) {
     if (s2 === null) {
       if (s1 === null) return null;
@@ -849,6 +784,9 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   }
 
   function myStop(msg) {
+    if (vars.debugon) return;
+    q._('msgbox').style.zIndex = 25000;
+    q._('msgboxmask').style.zIndex = 21000;
     msg = "<b>Sorry but a fatal error has occurred.</b>|" + msg;
     showMessage({
       "msg": msg,
@@ -876,18 +814,18 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
 
   function checkHeight(ele = null) {
     if (ele) {
-      ele.style.top = th + 35 + "px";
+      ele.style.top = inob.th + 35 + "px";
     }
     const wrap = q._("wrapper");
     wrap.style.height = 'auto';
     let h = wrap.offsetHeight;
     // min height to cover the wrapper
-    let mh = window.innerHeight - tbh;
+    let mh = window.innerHeight - inob.tbh;
     if (h < mh) h = mh;
     if (ele) {
       // dialog is in the body so subtract the topdiv height then
       // add its height plus a bit of extra space
-      const wh = (ele.offsetTop - th) + ele.offsetHeight + 30;
+      const wh = (ele.offsetTop - inob.th) + ele.offsetHeight + 30;
       if (h < wh) h = wh;
     }
     wrap.style.height = h + 'px';
@@ -900,7 +838,7 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
     // fixes the topdiv if the body width has changed
     if (lastBw === w) return;
     lastBw = w;
-    putTopdiv(w);
+    inob.putTopdiv(w);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -962,16 +900,56 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
 
   // These are variables and functions that have been transferred from edu
   // They belong in edu but are called from common.
-  let th;
-  let bh;    // not really used in this module
-  let tbh;
-  let putTopdiv = function () { };
+  // let th;
+  // let bh;    // not really used in this module
+  // let tbh;
+  // let putTopdiv = function () { };
 
-  function transfer_needed_variables(ob) {
-    th = ob.th;
-    bh = ob.bh;
-    tbh = ob.tbh;
-    putTopdiv = ob.putTopdiv;
+  let inob;
+  function transfer_ob(ob){
+    inob = ob;
   }
+
+  // function transfer_needed_variables(ob) {
+  //   th = ob.th;
+  //   bh = ob.bh;
+  //   tbh = ob.tbh;
+  //   putTopdiv = ob.putTopdiv;
+  // }
+
+
+  ////////////////////////////////////////////////////////////////////
+  function AUDIO_AND_VOLUME_CONTROL() { }
+  ////////////////////////////////////////////////////////////////////
+
+  /** * @constructor */
+  function Slider1(contId, ballId, r) {
+    this.sl_cont = q._(contId);
+    this.sl_ball = q._(ballId);
+    this.sl_r = r;
+    this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
+  }
+
+  Slider1.prototype = {
+    "moveBall": function (e) {
+      let lf = e.offsetX - 7;
+      if (e.target === this.sl_ball) {
+        lf = lf + e.target.offsetLeft;
+      }
+      if (lf < 0) {
+        lf = 0;
+      } else if (lf > this.sl_maxRight) {
+        lf = this.sl_maxRight;
+      }
+      this.sl_ball.style.left = lf + "px";
+      this.sl_r = lf / this.sl_maxRight;
+    },
+    // "initBall": function () {
+    initBall: function () {
+      let lf = this.sl_r * this.sl_maxRight;
+      this.sl_ball.style.left = lf + "px";
+    },
+  };
+
 
 });

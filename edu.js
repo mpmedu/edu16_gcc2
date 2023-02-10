@@ -29,7 +29,7 @@ xx.module("edu", function (apod) {
 
   // see init() for how debugon is set, ie true for localhost otherwise it remains false
 
-  let canDebug = false;
+  let canDebug = false;  //when on remote click
 
   // let relPath;   // relative path of application
   // let docPath;
@@ -124,13 +124,22 @@ xx.module("edu", function (apod) {
         });
       initTopVariables();
 
-      const needed_variables = {
+      // const needed_variables = {
+      //   "th": th,
+      //   "bh": bh,
+      //   "tbh": tbh,
+      //   "putTopdiv": putTopdiv
+      // }
+      // common.transfer_needed_variables(needed_variables);
+
+common.transfer_ob(
+      {
         "th": th,
-        "bh": bh,
+        // "bh": bh,
         "tbh": tbh,
         "putTopdiv": putTopdiv
       }
-      common.transfer_needed_variables(needed_variables);
+      );
 
       initAudio();
       // get the tick position for options numbers
@@ -240,8 +249,8 @@ xx.module("edu", function (apod) {
     sd3 = initAud("cont_v3", "ball_v3", default_volumes.r3);
 
     function initAud(c, b, r) {
-      // var slider = new common.Slider1(c, b, r);
-      var slider = new Slider1(c, b, r);
+      var slider = new common.Slider1(c, b, r);
+      // var slider = new Slider1(c, b, r);
       slider.initBall();
       if (c === "cont") {
         q._("cont").addEventListener("click", (e) => {
@@ -320,7 +329,7 @@ xx.module("edu", function (apod) {
   ////////////////////////////////////////////////////////////////////
 
   document.onkeydown = testKeyCode;
-
+// if (vars.debugon) alert('debug is on');
   function testKeyCode(e) {
     //if (nload > 0) return;
     if (common.isLoadingOn() > 0) return;
@@ -346,9 +355,11 @@ xx.module("edu", function (apod) {
         } else if (canDebug && vars.debugon === false) {
           vars.debugon = true;
         }
-        vars.debugon
-          ? (q._("debug").style.display = "")
-          : (q._("debug").style.display = "none");
+        if (vars.debugon) {
+          q._("debug").classList.remove('nodisplay');
+        } else {
+          q._("debug").classList.add('nodisplay');
+        }
       } else if (keycode === 76) {
         // Alt-L was pressed
         if (vars.debugon && document.getElementById("fn_output").value === "") {
@@ -2076,16 +2087,19 @@ xx.module("edu", function (apod) {
 
   let isActive = true; // if isActive is true then the page has focus
 
-  let default_volumes = {
+  const default_volumes = {
     r1: 1, // make starting volume for correct/wrong be 100%
     r2: 0.7, // make starting volume for background be 70%
     r3: 1, // make starting volume for q/options be 100%
     // "r1": 1, // make starting volume for correct/wrong be 100%
     // "r2": 0.7, // make starting volume for background be 70%
     // "r3": 1, // make starting volume for q/options be 100%
-
-
   };
+
+  const last_volumes = {
+  };
+
+
 
   function playCorrectOrWrong(corr) {
     if (!isActive) return;
@@ -2096,10 +2110,21 @@ xx.module("edu", function (apod) {
     }
   }
 
+  function set_last_volumes() {
+    last_volumes.r1 = default_volumes.r1;
+    last_volumes.r2 = default_volumes.r2;
+    last_volumes.r3 = default_volumes.r3;
+  }
+
+
   function Audiovolume() {
     // called from submenu which created at runtime
     // clicking on Settings -> Audio volume submenu
     common.showDialog("getaudiovolume");
+    // save in case of Cancel
+    last_volumes.r1 = sd1.sl_r;
+    last_volumes.r2 = sd2.sl_r;
+    last_volumes.r3 = sd3.sl_r;
   }
 
   q.delegate("getaudiovolume", "click", "button", function (e) {
@@ -2112,6 +2137,15 @@ xx.module("edu", function (apod) {
       sd3.sl_r = default_volumes.r3;
       sd3.initBall();
     } else {
+      if (butt == 'Cancel') {
+        // put back to saved last_volumes
+        sd1.sl_r = last_volumes.r1;
+        sd1.initBall();
+        sd2.sl_r = last_volumes.r2;
+        sd2.initBall();
+        sd3.sl_r = last_volumes.r3;
+        sd3.initBall();
+      }
       common.hideDialog("getaudiovolume");
     }
   });
@@ -2146,7 +2180,7 @@ xx.module("edu", function (apod) {
   function pauseClip(e, ele) {
     e.stopPropagation(); // Stop stuff happening
     e.preventDefault(); // Totally stop stuff happening
-    let choice = parseInt(ele.id.charAt(ele.id.length - 1), 10);
+    let choice = parseInt(ele.id.charAt(ele.id.length - 2), 10);
     if (isClip[aon][choice]) {
       ao[aon][choice].pause();
       clipOn = -1;
@@ -2254,64 +2288,62 @@ xx.module("edu", function (apod) {
   });
 
 
-  ////////////////////////////////////////////////////////////////////
-  function AUDIO_AND_VOLUME_CONTROL() { }
-  ////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////
+  // function AUDIO_AND_VOLUME_CONTROL() { }
+  // ////////////////////////////////////////////////////////////////////
 
-  /** * @constructor */
-  function Slider1(contId, ballId, r) {
-    this.sl_cont = q._(contId);
-    this.sl_ball = q._(ballId);
-    this.sl_r = r;
-    this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
-  }
+  // /** * @constructor */
+  // function Slider1(contId, ballId, r) {
+  //   this.sl_cont = q._(contId);
+  //   this.sl_ball = q._(ballId);
+  //   this.sl_r = r;
+  //   this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
+  // }
 
-  Slider1.prototype = {
-    "moveBall": function (e) {
-      let lf = e.offsetX - 7;
-      if (e.target === this.sl_ball) {
-        lf = lf + e.target.offsetLeft;
-      }
-      if (lf < 0) {
-        lf = 0;
-      } else if (lf > this.sl_maxRight) {
-        lf = this.sl_maxRight;
-      }
-      this.sl_ball.style.left = lf + "px";
-      this.sl_r = lf / this.sl_maxRight;
-    },
-    // "initBall": function () {
-    initBall: function () {
-      let lf = this.sl_r * this.sl_maxRight;
-      this.sl_ball.style.left = lf + "px";
-    },
-  };
+  // Slider1.prototype = {
+  //   "moveBall": function (e) {
+  //     let lf = e.offsetX - 7;
+  //     if (e.target === this.sl_ball) {
+  //       lf = lf + e.target.offsetLeft;
+  //     }
+  //     if (lf < 0) {
+  //       lf = 0;
+  //     } else if (lf > this.sl_maxRight) {
+  //       lf = this.sl_maxRight;
+  //     }
+  //     this.sl_ball.style.left = lf + "px";
+  //     this.sl_r = lf / this.sl_maxRight;
+  //   },
+  //   // "initBall": function () {
+  //   initBall: function () {
+  //     let lf = this.sl_r * this.sl_maxRight;
+  //     this.sl_ball.style.left = lf + "px";
+  //   },
+  // };
 
-  initAud("cont", "ball", 0.2);
+  // initAud("cont", "ball", 0.2);
 
-  function initAud(c, b, r) {
-    let slider = new Slider1(c, b, r);
-    slider.initBall();
-    if (c === "cont") {
-      q._("cont").addEventListener("click", (e) => {
-        slider.moveBall(e);
-        //setVolume();
-      });
-    } else {
-      q._(c).addEventListener("click", (e) => {
-        slider.moveBall(e);
-      });
-    }
-    return slider;
-  }
+  // function initAud(c, b, r) {
+  //   let slider = new Slider1(c, b, r);
+  //   slider.initBall();
+  //   if (c === "cont") {
+  //     q._("cont").addEventListener("click", (e) => {
+  //       slider.moveBall(e);
+  //       //setVolume();
+  //     });
+  //   } else {
+  //     q._(c).addEventListener("click", (e) => {
+  //       slider.moveBall(e);
+  //     });
+  //   }
+  //   return slider;
+  // }
 
-
-    // ******************************************
+  // ******************************************
   // this event handler is for clicks on the top menu and sub menu items
   // it calls the function attached to the menu item
   // ******************************************
 
-  // this should really be in edu.js and not common.js
   q.delegate("topmenucontainer", "click", "#theMenu li", function __clickOnAMenuItem(e) {
     e.stopPropagation(); // Stop stuff happening
     //e.preventDefault(); // Totally stop stuff happening
