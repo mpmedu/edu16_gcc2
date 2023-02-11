@@ -34,7 +34,7 @@ xx.module("edu", function (apod) {
   // let relPath;   // relative path of application
   // let docPath;
 
-  // let lastBw = 0; // saving the last width of body
+  let lastBw = 0; // saving the last width of body
 
 
   // saves widths of menu items so that they can be properly placed when window is resized
@@ -77,12 +77,12 @@ xx.module("edu", function (apod) {
       // console.log("at 1");
       // console.log('done after init');
       tm_disable();
-      common.showDialog("startupbox");
+      showDialog("startupbox");
       q.qs("body").removeChild(q._("startupDiv"));
       // for testing the startupDiv
       // setTimeout(() => {
       //   console.log('done after 4s in init');
-      // common.showDialog("startupbox");
+      // showDialog("startupbox");
       // q.qs("body").removeChild(q._("startupDiv"));
       //-------- the following is for testing showMessage()
       // common.showMessage({
@@ -132,14 +132,14 @@ xx.module("edu", function (apod) {
       // }
       // common.transfer_needed_variables(needed_variables);
 
-common.transfer_ob(
-      {
-        "th": th,
-        // "bh": bh,
-        "tbh": tbh,
-        "putTopdiv": putTopdiv
-      }
-      );
+// common.transfer_ob(
+//       {
+//         "th": th,
+//         // "bh": bh,
+//         "tbh": tbh,
+//         "putTopdiv": putTopdiv
+//       }
+//       );
 
       initAudio();
       // get the tick position for options numbers
@@ -272,15 +272,15 @@ common.transfer_ob(
     const wrapper = q._("wrapper");
     wrapper.style.backgroundImage = "none";
     wrapper.innerHTML = common.getHtml("tem_info");
-    common.checkHeight();
-    common.checkWidth();
+    checkHeight();
+    checkWidth();
   }
 
   q.delegate("wrapper", "click", ".info_class", function clickOnInfoClassInWrapper(e) {
     // this is executed when you click on any item of info which is displayed in the wrapper
     this.nextElementSibling.nextElementSibling.classList.toggle("nodisplay");
-    common.checkHeight();
-    common.checkWidth();
+    checkHeight();
+    checkWidth();
   });
 
   ////////////////////////////////////////////////////////////////////
@@ -392,7 +392,7 @@ common.transfer_ob(
 
   q.delegate("startupbox", "click", "button", function clickOnStartupboxButton() {
     if (this.innerHTML === "Accept") {
-      common.hideDialog("startupbox");
+      hideDialog("startupbox");
       tm_enable(); // enable the top menu
     } else {
       location.replace("https://www.google.com");
@@ -427,7 +427,7 @@ common.transfer_ob(
               "msg": "Correct key",
               "bc": "g",
               "callback1": function () {
-                common.hideDialog("unlockbox");
+                hideDialog("unlockbox");
               },
             });
           })
@@ -441,7 +441,7 @@ common.transfer_ob(
       }
     } else {
       // must be Exit
-      common.hideDialog("unlockbox");
+      hideDialog("unlockbox");
     }
   });
 
@@ -485,7 +485,7 @@ common.transfer_ob(
     q._("clb1_input").value = q._("fn_output").value; // the filename, eg science.qna
     q._("clb2_input").value = ""; // textbox for the password to be entered by the owner of the file
     // show the box
-    common.showDialog("creatorloginbox");
+    showDialog("creatorloginbox");
     // set focus on the 2nd input field, textbox of the creator's password
     q._("clb2_input").focus();
   }
@@ -497,16 +497,16 @@ common.transfer_ob(
       let inps = q.qa("#creatorloginbox input");
       let ob = { "fName": inps[0].value, "pw": inps[1].value };
       if (pwStringCheck(ob)) {
-        common.hideDialog("creatorloginbox");
+        hideDialog("creatorloginbox");
         showGetQnaKeyBox();
       } else {
         common.showMessage({ "msg": "Wrong password" });
         if (++loginTries > 5) {
-          common.hideDialog("creatorloginbox");
+          hideDialog("creatorloginbox");
         }
       }
     } else {
-      common.hideDialog("creatorloginbox");
+      hideDialog("creatorloginbox");
     }
   });
 
@@ -605,12 +605,13 @@ common.transfer_ob(
     q._("gqkb1_input").value = ""; // textbox for the string to be input, eg 637083_BN
     q._("gqkb3_input").value = ""; // textbox for the unlock key to be output, eg 2804-6317-0834
     // show the getqnakeybox
-    common.showDialog("getqnakeybox");
+    showDialog("getqnakeybox");
     // set focus on the 1st input field, textbox for input
     q._("gqkb1_input").focus();
   }
 
-  q.qs("#getqnakeybox button").addEventListener("click", function clickOnGetqnakeyboxButton(e) {
+
+  q.delegate("getqnakeybox", "click", "button", function clickOnGetqnakeyboxButton(e) {
     const butt = this.textContent;
     if (butt === "Calculate key") {
       q.qs("#gqkb3_input").value = ""; // set textbox for the unlock key to ''
@@ -621,8 +622,8 @@ common.transfer_ob(
       } else {
         common.showMessage({ "msg": "Bad computer ID", "bc": "b" });
       }
-    } else {
-      common.hideDialog("getqnakeybox");
+    } else {    // Exit was clicked
+      hideDialog("getqnakeybox");
     }
   }
   );
@@ -766,11 +767,11 @@ common.transfer_ob(
 
   // **************** OpenFile() *********************
   function OpenFile() {
-    common.showDialog("myExplorer");
+    showDialog("myExplorer");
   }
 
   function checkopenfile(butt, fname = "") {
-    common.hideDialog('myExplorer');
+    hideDialog('myExplorer');
     if (butt === 'Cancel' || fname === '' || fname === fname1) {
       return;
     }
@@ -821,7 +822,7 @@ common.transfer_ob(
           // clear the 3rd input field
           q._("gcode_input3").value = "";
           // show the unlock box
-          common.showDialog("unlockbox");
+          showDialog("unlockbox");
           // set focus on the 3rd input field
           q._("gcode_input3").focus();
         }
@@ -943,7 +944,7 @@ common.transfer_ob(
     let ob = {};
     if (getcatarray(ob)) {
       document.getElementById("catlist_container").innerHTML = ob.s;
-      common.showDialog("catlist_container");
+      showDialog("catlist_container");
       dirty = false;
     } else {
       alert("Problem with categories in the file");
@@ -1009,7 +1010,7 @@ common.transfer_ob(
       dirty = true;
     } else {
       // clicked on the Cancel or Apply button or OK
-      common.hideDialog("catlist_container");
+      hideDialog("catlist_container");
       if (butt === "Apply") {
         if (!dirty) return;
         // must first update the category array
@@ -1052,7 +1053,7 @@ common.transfer_ob(
     q._("gnq1_input").value = defaultn;
     q._("gnq2_input").value = realn;
     orgnq = realn;
-    common.showDialog("getnumqs");
+    showDialog("getnumqs");
   }
 
   q.delegate("getnumqs", "click", "button", function (e) {
@@ -1062,7 +1063,7 @@ common.transfer_ob(
       orgnq = realn;
       q._("gnq2_input").value = realn;
     } else {
-      common.hideDialog("getnumqs");
+      hideDialog("getnumqs");
       if (butt === "Apply") {
         realn = orgnq;
       }
@@ -1096,7 +1097,7 @@ common.transfer_ob(
     q._("gta1_input").value = defaultta;
     q._("gta2_input").value = realta;
     orgta = realta;
-    common.showDialog("gettimeallowed");
+    showDialog("gettimeallowed");
   }
 
   q.delegate("gettimeallowed", "click", "button", function (e) {
@@ -1106,7 +1107,7 @@ common.transfer_ob(
       orgta = realta;
       q._("gta2_input").value = realta;
     } else {
-      common.hideDialog("gettimeallowed");
+      hideDialog("gettimeallowed");
       if (butt === "Apply") {
         realta = orgta;
       }
@@ -1213,8 +1214,8 @@ common.transfer_ob(
           nTest = realn;
           if (nTest > totalSelected) nTest = totalSelected;
           document.getElementById("score_input").value = nTest;
-          common.checkHeight();
-          common.checkWidth();
+          checkHeight();
+          checkWidth();
           // change go button to Start, green
           gamestate = "Start";
           goButton.textContent = gamestate;
@@ -1344,8 +1345,8 @@ common.transfer_ob(
     aon = QsRound % 2;
     correctAnswer = nextcorrectAnswer;
     gametimer(realta);
-    common.checkHeight();
-    common.checkWidth();
+    checkHeight();
+    checkWidth();
     QsRound++;
   }
 
@@ -2099,8 +2100,6 @@ common.transfer_ob(
   const last_volumes = {
   };
 
-
-
   function playCorrectOrWrong(corr) {
     if (!isActive) return;
     if (corr) {
@@ -2116,11 +2115,10 @@ common.transfer_ob(
     last_volumes.r3 = default_volumes.r3;
   }
 
-
   function Audiovolume() {
     // called from submenu which created at runtime
     // clicking on Settings -> Audio volume submenu
-    common.showDialog("getaudiovolume");
+    showDialog("getaudiovolume");
     // save in case of Cancel
     last_volumes.r1 = sd1.sl_r;
     last_volumes.r2 = sd2.sl_r;
@@ -2146,7 +2144,7 @@ common.transfer_ob(
         sd3.sl_r = last_volumes.r3;
         sd3.initBall();
       }
-      common.hideDialog("getaudiovolume");
+      hideDialog("getaudiovolume");
     }
   });
 
@@ -2288,57 +2286,6 @@ common.transfer_ob(
   });
 
 
-  // ////////////////////////////////////////////////////////////////////
-  // function AUDIO_AND_VOLUME_CONTROL() { }
-  // ////////////////////////////////////////////////////////////////////
-
-  // /** * @constructor */
-  // function Slider1(contId, ballId, r) {
-  //   this.sl_cont = q._(contId);
-  //   this.sl_ball = q._(ballId);
-  //   this.sl_r = r;
-  //   this.sl_maxRight = q.getWidth(this.sl_cont) - q.getWidth(this.sl_ball) - 2;
-  // }
-
-  // Slider1.prototype = {
-  //   "moveBall": function (e) {
-  //     let lf = e.offsetX - 7;
-  //     if (e.target === this.sl_ball) {
-  //       lf = lf + e.target.offsetLeft;
-  //     }
-  //     if (lf < 0) {
-  //       lf = 0;
-  //     } else if (lf > this.sl_maxRight) {
-  //       lf = this.sl_maxRight;
-  //     }
-  //     this.sl_ball.style.left = lf + "px";
-  //     this.sl_r = lf / this.sl_maxRight;
-  //   },
-  //   // "initBall": function () {
-  //   initBall: function () {
-  //     let lf = this.sl_r * this.sl_maxRight;
-  //     this.sl_ball.style.left = lf + "px";
-  //   },
-  // };
-
-  // initAud("cont", "ball", 0.2);
-
-  // function initAud(c, b, r) {
-  //   let slider = new Slider1(c, b, r);
-  //   slider.initBall();
-  //   if (c === "cont") {
-  //     q._("cont").addEventListener("click", (e) => {
-  //       slider.moveBall(e);
-  //       //setVolume();
-  //     });
-  //   } else {
-  //     q._(c).addEventListener("click", (e) => {
-  //       slider.moveBall(e);
-  //     });
-  //   }
-  //   return slider;
-  // }
-
   // ******************************************
   // this event handler is for clicks on the top menu and sub menu items
   // it calls the function attached to the menu item
@@ -2364,7 +2311,105 @@ common.transfer_ob(
     common.callMenuFunc();
   });
 
+  function showDialog(id) {
+    const ele = q._(id);
+    ele.classList.remove("nodisplay");
+    checkHeight(ele);
+    checkWidth(ele);
+    q._("dialogmask").classList.remove("nodisplay"); // turn on dialogmask
+  }
 
+  function hideDialog(id) {
+    q._(id).classList.add("nodisplay");
+    q._("dialogmask").classList.add("nodisplay"); // turn off dialogmask
+    checkHeight();
+    checkWidth();
+  }
+
+  function checkHeight(ele = null) {
+    if (ele) {
+      ele.style.top = th + 35 + "px";
+    }
+    const wrap = q._("wrapper");
+    wrap.style.height = 'auto';
+    let h = wrap.offsetHeight;
+    // min height to cover the wrapper
+    let mh = window.innerHeight - tbh;
+    if (h < mh) h = mh;
+    if (ele) {
+      // dialog is in the body so subtract the topdiv height then
+      // add its height plus a bit of extra space
+      const wh = (ele.offsetTop - th) + ele.offsetHeight + 30;
+      if (h < wh) h = wh;
+    }
+    wrap.style.height = h + 'px';
+  }
+
+  function checkWidth(ele = null) {
+    const w = document.body.offsetWidth;
+    // center the dialog if one is showing
+    if (ele) ele.style.left = (w - ele.offsetWidth) / 2 + "px";
+    // fixes the topdiv if the body width has changed
+    if (lastBw === w) return;
+    lastBw = w;
+    putTopdiv(w);
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  function RESIZING() { }
+  ////////////////////////////////////////////////////////////////////
+
+  window.addEventListener("resize", function windowResize() {
+    // const bw = document.body.offsetWidth;
+    // console.log('In resize: lastbw= ' + lastBw + ' bw= ' + bw);
+    if (!q._("dialogmask").classList.contains("nodisplay")) {
+      // a dialog box must be showing because the dialogmask is on
+      // the dialogmask is used with one of the following dialog boxes
+      let dialogsArray = [
+        "startupbox",
+        "myExplorer",
+        "unlockbox",
+        "creatorloginbox",
+        "getqnakeybox",
+        "catlist_container",
+        "getnumqs",
+        "gettimeallowed",
+        "getaudiovolume",
+      ];
+      for (let i = 0; i < dialogsArray.length; i++) {
+        let tmp = q._(dialogsArray[i]);
+        if (!tmp.classList.contains("nodisplay")) {
+          checkHeight(tmp);
+          checkWidth(tmp);
+          break;  // jump out of for loop because only 1 dialog can be on
+        }
+      }
+    } else {
+      // the wrappermask is used with the questions and options
+      let wm = q._("wrappermask");
+      if (!wm.classList.contains("nodisplay")) {
+        wm.style.width = "0px";
+        wm.style.height = "0px";
+        checkHeight();
+        checkWidth();
+        let wrap = q._("wrapper");
+        wm.style.width = wrap.offsetWidth + "px";
+        wm.style.height = wrap.offsetHeight + "px";
+      } else {
+        // this is done if a dialog box is not showing and wrapper mask is not showing
+        checkHeight();
+        checkWidth();
+      }
+    }
+    common.fixElementAndMask("msgbox", "msgboxmask");
+    common.fixElementAndMask("loading", "loadingmask");
+    let e = q._("endbox");
+    if (e.classList.contains("nodisplay")) {
+      return;
+    } else {
+      common.centreBoxAndShow(e);
+    }
+  });
 
 
 });

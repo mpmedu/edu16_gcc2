@@ -54,7 +54,7 @@ var edu;
 // r1,r2 and r3 are properties of default_volumes
 // edu.r1.r2.r3;  // r1 and r2 not needed, I don't know why r3 is needed
 // these are all returned in json.something when reading a qna file
-edu.value.subject.settings.numCats.catArr.totalQs.isRestricted.nFreeAccessQs.base.data.ptrArr.codeBytes.cdArr.ansCoder.filesPath.textColor.fontName.fontSize.fontBold.fontUnderline.fontItalic.FrameBorderWidth.FrameBackColor.FrameBorderColor.RimWidth.backgroundPicture.backgroundStyle.backgroundColor.backgroundSound.backQTimeSound.keyForecolor.keyBackcolor.keyBordercolor.fenceTLcolor.fenceBRcolor.tickColor.pwString.dcontact;
+edu.value.subject.settings.numCats.catArr.totalQs.isRestricted.nFreeAccessQs.base.fdata.ptrArr.codeBytes.cdArr.ansCoder.filesPath.textColor.fontName.fontSize.fontBold.fontUnderline.fontItalic.FrameBorderWidth.FrameBackColor.FrameBorderColor.RimWidth.backgroundPicture.backgroundStyle.backgroundColor.backgroundSound.backQTimeSound.keyForecolor.keyBackcolor.keyBordercolor.fenceTLcolor.fenceBRcolor.tickColor.pwString.dcontact;
 
 
 

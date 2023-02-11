@@ -44,13 +44,8 @@ xx.module("common", function (apod) {
     centreBoxAndShow: centreBoxAndShow,
     showDialog: showDialog,
     hideDialog: hideDialog,
-    checkHeight: checkHeight,
-    checkWidth: checkWidth,
-    // transfer_needed_variables: transfer_needed_variables,
-    transfer_ob:transfer_ob,
     maskscreen:maskscreen,
     Slider1: Slider1,
-    // initAud:initAud,
   });
 
   xx.constants = {
@@ -800,123 +795,17 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   function showDialog(id) {
     const ele = q._(id);
     ele.classList.remove("nodisplay");
-    checkHeight(ele);
-    checkWidth(ele);
+    // checkHeight(ele);
+    // checkWidth(ele);
     q._("dialogmask").classList.remove("nodisplay"); // turn on dialogmask
   }
 
   function hideDialog(id) {
     q._(id).classList.add("nodisplay");
     q._("dialogmask").classList.add("nodisplay"); // turn off dialogmask
-    checkHeight();
-    checkWidth();
+    // checkHeight();
+    // checkWidth();
   }
-
-  function checkHeight(ele = null) {
-    if (ele) {
-      ele.style.top = inob.th + 35 + "px";
-    }
-    const wrap = q._("wrapper");
-    wrap.style.height = 'auto';
-    let h = wrap.offsetHeight;
-    // min height to cover the wrapper
-    let mh = window.innerHeight - inob.tbh;
-    if (h < mh) h = mh;
-    if (ele) {
-      // dialog is in the body so subtract the topdiv height then
-      // add its height plus a bit of extra space
-      const wh = (ele.offsetTop - inob.th) + ele.offsetHeight + 30;
-      if (h < wh) h = wh;
-    }
-    wrap.style.height = h + 'px';
-  }
-
-  function checkWidth(ele = null) {
-    const w = document.body.offsetWidth;
-    // center the dialog if one is showing
-    if (ele) ele.style.left = (w - ele.offsetWidth) / 2 + "px";
-    // fixes the topdiv if the body width has changed
-    if (lastBw === w) return;
-    lastBw = w;
-    inob.putTopdiv(w);
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  function RESIZING() { }
-  ////////////////////////////////////////////////////////////////////
-
-  window.addEventListener("resize", function windowResize() {
-    // const bw = document.body.offsetWidth;
-    // console.log('In resize: lastbw= ' + lastBw + ' bw= ' + bw);
-    if (!q._("dialogmask").classList.contains("nodisplay")) {
-      // a dialog box must be showing because the dialogmask is on
-      // the dialogmask is used with one of the following dialog boxes
-      let dialogsArray = [
-        "startupbox",
-        "myExplorer",
-        "unlockbox",
-        "creatorloginbox",
-        "getqnakeybox",
-        "catlist_container",
-        "getnumqs",
-        "gettimeallowed",
-        "getaudiovolume",
-      ];
-      for (let i = 0; i < dialogsArray.length; i++) {
-        let tmp = q._(dialogsArray[i]);
-        if (!tmp.classList.contains("nodisplay")) {
-          checkHeight(tmp);
-          checkWidth(tmp);
-          break;  // jump out of for loop because only 1 dialog can be on
-        }
-      }
-    } else {
-      // the wrappermask is used with the questions and options
-      let wm = q._("wrappermask");
-      if (!wm.classList.contains("nodisplay")) {
-        wm.style.width = "0px";
-        wm.style.height = "0px";
-        checkHeight();
-        checkWidth();
-        let wrap = q._("wrapper");
-        wm.style.width = wrap.offsetWidth + "px";
-        wm.style.height = wrap.offsetHeight + "px";
-      } else {
-        // this is done if a dialog box is not showing and wrapper mask is not showing
-        checkHeight();
-        checkWidth();
-      }
-    }
-    fixElementAndMask("msgbox", "msgboxmask");
-    fixElementAndMask("loading", "loadingmask");
-    let e = q._("endbox");
-    if (e.classList.contains("nodisplay")) {
-      return;
-    } else {
-      centreBoxAndShow(e);
-    }
-  });
-
-
-  // These are variables and functions that have been transferred from edu
-  // They belong in edu but are called from common.
-  // let th;
-  // let bh;    // not really used in this module
-  // let tbh;
-  // let putTopdiv = function () { };
-
-  let inob;
-  function transfer_ob(ob){
-    inob = ob;
-  }
-
-  // function transfer_needed_variables(ob) {
-  //   th = ob.th;
-  //   bh = ob.bh;
-  //   tbh = ob.tbh;
-  //   putTopdiv = ob.putTopdiv;
-  // }
-
 
   ////////////////////////////////////////////////////////////////////
   function AUDIO_AND_VOLUME_CONTROL() { }
@@ -931,7 +820,7 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
   }
 
   Slider1.prototype = {
-    "moveBall": function (e) {
+    moveBall: function (e) {
       let lf = e.offsetX - 7;
       if (e.target === this.sl_ball) {
         lf = lf + e.target.offsetLeft;
@@ -944,7 +833,6 @@ They call functions replacer(s,dta) and getTemplateVars(str) to replace placehol
       this.sl_ball.style.left = lf + "px";
       this.sl_r = lf / this.sl_maxRight;
     },
-    // "initBall": function () {
     initBall: function () {
       let lf = this.sl_r * this.sl_maxRight;
       this.sl_ball.style.left = lf + "px";
